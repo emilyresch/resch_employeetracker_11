@@ -67,7 +67,7 @@ function firstQuestion() {
                         name: "roleChoice",
                         type: "list",
                         message: "How would you like to manange Roles?",
-                        choices: ["ADD", "VIEW", "UPDATE", "DELETE", "EXIT"]
+                        choices: ["ADD", "VIEW", "UPDATE EMPLOYEE ROLES", "DELETE", "EXIT"]
                     })
                     .then(function (answer) {
                         if (answer.roleChoice === "ADD") {
@@ -369,41 +369,32 @@ function viewEmp() {
 }
 
 function updateEmpRoles() {
-    connection.query("SELECT employee.id, title, salary, first_name, last_name FROM role JOIN employee ON employee.role_id = role.id", function (err, data) {
-                if (err) throw err;
-                console.table(data);
-                inquirer.prompt([{
-                        name: "updateRole",
-                        type: "list",
-                        message: "Which EMPLOYEE ROLE would you like to UPDATE?",
-                        choices: function () {
-                            var roleArray = [];
-                            for (var i = 0; i < data.length; i++) {
-                                roleArray.push(data[i].title);
-                            }
-                            return roleArray;
-                        }
-                    },
-                    {
-                        name: "newRole",
-                        type: "list",
-                        message: "To what would you like to UPDATE the EMPLOYEE'S ROLE?",
-                        choices: function () {
-                            var roleArray2 = [];
-                            for (var i = 0; i < data.length; i++) {
-                                roleArray2.push(data[i].title);
-                            }
-                            return roleArray2;
-                        }
-                    }
-                ])
-
+    connection.query("SELECT employee.id, first_name, last_name, title, role_id FROM role LEFT JOIN employee ON employee.role_id = role.id", function (err, data) {
+        if (err) throw err;
+        console.table(data);
+        inquirer.prompt([{
+                name: "empId",
+                type: "number",
+                message: "What is the ID number of the EMPLOYEE whose role you would like to UPDATE?"
+            },
+            {
+                name: "roleId",
+                type: "number",
+                message: "What is the updated ROLE ID number?"
+            }
+        ]).then(function (answer) {
+            connection.query("UPDATE employee SET role_id = ? WHERE id = ?;", [answer.roleId, answer.empId], function (err, data) {
+                console.log("UPDATING ROLE ID");
+                viewEmp();
             })
-        }
+        })
+
+    })
+}
 ///////////////////////COMBO TABLES//////////////////////
 function seeEmpRoles() {
     console.log("VIEW ROLES and EMPLOYEES");
-    connection.query("SELECT employee.id, salary, first_name, last_name FROM role JOIN employee ON employee.role_id = role.id", function (err, data) {
+    connection.query("SELECT employee.id, title, salary, first_name, last_name FROM role JOIN employee ON employee.role_id = role.id", function (err, data) {
         if (err) throw err;
         console.table(data);
         newQuery();
