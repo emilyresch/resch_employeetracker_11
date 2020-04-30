@@ -12,26 +12,13 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 
-var connection;
-if (process.env.JAWSDB_URL) {
-  connection = mysql.createConnection(process.env.JAWSDB_URL)
-} else {
-  connection = mysql.createConnection({
-    host: "tyduzbv3ggpf15sx.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
+var connection = mysql.createConnection({
+    host: "localhost",
     port: 3306,
-    user: "y8vb05o6shwxvuji",
-    password: "sjfwpjezpqo3diw1",
+    user: "root",
+    password: "rootroot",
     database: "company_db"
-  });
-}
-
-// var connection = mysql.createConnection({
-//     host: "localhost",
-//     port: 3306,
-//     user: "root",
-//     password: "rootroot",
-//     database: "company_db"
-// });
+});
 
 connection.connect(function (err) {
     if (err) throw err;
@@ -410,7 +397,7 @@ function seeEmpRoles() {
     console.log("VIEW ROLES and EMPLOYEES");
     connection.query("SELECT employee.id, title, salary, first_name, last_name FROM role JOIN employee ON employee.role_id = role.id", function (err, data) {
         if (err) throw err;
-        console.table(data);
+        cTable.table(data);
         newQuery();
     })
 }
