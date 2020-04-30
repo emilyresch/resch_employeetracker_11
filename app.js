@@ -397,7 +397,7 @@ function seeEmpRoles() {
     console.log("VIEW ROLES and EMPLOYEES");
     connection.query("SELECT employee.id, title, salary, first_name, last_name FROM role JOIN employee ON employee.role_id = role.id", function (err, data) {
         if (err) throw err;
-        cTable.table(data);
+        console.table(data);
         newQuery();
     })
 }
